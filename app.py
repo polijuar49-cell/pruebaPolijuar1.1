@@ -7,7 +7,7 @@ import urllib.parse  # Para codificar mensaje de WhatsApp
 import database
 
 app = Flask(__name__)
-app.secret_key = 'clave_secreta_para_flash_y_sesiones'
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret') 
 
 # Configuración de Flask-Login
 login_manager = LoginManager()
@@ -271,4 +271,7 @@ def enviar_whatsapp():
     return redirect(url_whatsapp)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Replit (y muchos hosts) provee la variable de entorno PORT.
+    port = int(os.environ.get('PORT', 5000))
+    # host 0.0.0.0 para que Replit exponga la app públicamente
+    app.run(host='0.0.0.0', port=port, debug=False)
