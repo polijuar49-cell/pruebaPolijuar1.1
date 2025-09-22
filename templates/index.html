@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Listado de Productos</h1>
+
+{% if current_user.is_authenticated and current_user.rol == 'admin' %}
+    <a href="{{ url_for('add') }}" class="btn btn-primary mb-3">Agregar Nuevo Producto</a>
+{% elif current_user.is_authenticated and current_user.rol == 'user' %}
+    <p class="text-muted">Selecciona productos y cantidades para tu pedido.</p>
+{% endif %}
+
+{% if productos %}
+<div class="table-responsive">
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th>Foto</th>
+            <th>Precio (S/.)</th>
+            {% if current_user.is_authenticated and current_user.rol == 'admin' %}
+            <th>Acciones</th>
+            {% elif current_user.is_authenticated and current_user.rol == 'user' %}
+            <th>Cantidad</th>
+            <th>Acción</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto[0] }}</td>
+            <td>{{ producto[1] }}</td>
+            <td>{{ producto[2] }}</td>
+            <td>
+                {% if producto[3] %}
+                    <img src="{{ producto[3] }}" alt="{{ producto[2] }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                {% else %}
+                    <span>Sin foto</span>
+                {% endif %}
+            </td>
+            <td>{{ "%.2f"|format(producto[4]) }}</td>
+            {% if current_user.is_authenticated and current_user.rol == 'admin' %}
+            <td>
+                <a href="{{ url_for('edit', codigo=producto[1]) }}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{{ url_for('delete', codigo=producto[1]) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar?')">Eliminar</a>
+            </td>
+            {% elif current_user.is_authenticated and current_user.rol == 'user' %}
+            <td>
+                <form method="POST" action="{{ url_for('agregar_carrito', producto_id=producto[0]) }}" style="display: inline;">
+                    <input type="number" name="cantidad" min="1" value="1" class="form-control form-control-sm" style="width: 80px; display: inline-block;">
+            </td>
+            <td>
+                    <button type="submit" class="btn btn-success btn-sm">Agregar al Pedido</button>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p>No hay productos registrados.</p>
+{% endif %}
+{% endblock %}

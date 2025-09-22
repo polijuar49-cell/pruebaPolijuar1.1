@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Carrito de Pedidos - Sistema CRUD{% endblock %}
+
+{% block content %}
+<h1>Tu Carrito de Pedidos</h1>
+
+{% if carrito %}
+    <p class="text-muted">Has seleccionado {{ total_items }} item(s) por un total de S/ {{ "%.2f"|format(total) }}.</p>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Foto</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario (S/.)</th>
+                    <th>Subtotal (S/.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in carrito %}
+                <tr>
+                    <td>
+                        {% if item.foto %}
+                            <img src="{{ item.foto }}" alt="{{ item.descripcion }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                        {% else %}
+                            <span>Sin foto</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.descripcion }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>{{ "%.2f"|format(item.precio) }}</td>
+                    <td>{{ "%.2f"|format(item.precio * item.cantidad) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row justify-content-end">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-end">
+                    <h5 class="card-title">Total a Abonar</h5>
+                    <h4 class="text-success">S/ {{ "%.2f"|format(total) }}</h4>
+                    <a href="{{ url_for('enviar_whatsapp') }}" class="btn btn-primary btn-lg w-100" onclick="return confirm('¿Confirmas enviar este pedido por WhatsApp? Se abrirá WhatsApp Web/app.')">
+                        Enviar Pedido por WhatsApp
+                    </a>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary mt-2 w-100">Continuar Comprando</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <div class="alert alert-warning text-center">
+        <h4>Tu carrito está vacío</h4>
+        <p>No has agregado ningún producto aún. Ve al <a href="{{ url_for('index') }}">listado de productos</a> para seleccionar items.</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Ir al Listado</a>
+    </div>
+{% endif %}
+{% endblock %}

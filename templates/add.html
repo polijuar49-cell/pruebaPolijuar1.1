@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Agregar Nuevo Producto</h1>
+<form method="POST" action="{{ url_for('insert') }}">
+    <div class="mb-3">
+        <label for="codigo" class="form-label">Código (único):</label>
+        <input type="text" class="form-control" id="codigo" name="codigo" required>
+    </div>
+    <div class="mb-3">
+        <label for="descripcion" class="form-label">Descripción:</label>
+        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="foto" class="form-label">Ruta de Foto (ej: /static/images/vasos.jpg):</label>
+        <input type="text" class="form-control" id="foto" name="foto">
+    </div>
+    <div class="mb-3">
+        <label for="precio" class="form-label">Precio (con dos decimales):</label>
+        <input type="number" step="0.01" class="form-control" id="precio" name="precio" required>
+    </div>
+    <button type="submit" class="btn btn-success">Agregar</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
